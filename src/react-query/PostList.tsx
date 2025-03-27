@@ -1,12 +1,17 @@
-import { useState } from "react";
+import React from "react";
 import usePosts from "../hooks/usePosts";
 
 const PostList = () => {
   const pageLimit = 10;
-  const [page, setPage] = useState(1);
 
   //Implementing catching using react-query
-  const { data: posts, error, isLoading } = usePosts({ page, pageLimit });
+  const {
+    data: posts,
+    error,
+    isLoading,
+    fetchNextPage,
+    isFetchingNextPage,
+  } = usePosts({ pageLimit });
 
   if (error) return <p>{error.message}</p>;
   if (isLoading)
@@ -19,32 +24,24 @@ const PostList = () => {
   return (
     <>
       <ul className="list-group">
-        {posts?.map((post) => (
-          <li key={post.id} className="list-group-item">
-            {post.title}
-          </li>
+        {posts.pages.map((page, index) => (
+          <React.Fragment key={index}>
+            {page.map((post) => (
+              <li key={post.id} className="list-group-item">
+                {post.title}
+              </li>
+            ))}
+          </React.Fragment>
         ))}
       </ul>
 
       <div className="d-flex justify-content-between mt-3">
         <button
-          disabled={page === 1}
           className="btn btn-primary"
-          onClick={() => {
-            setPage(page - 1);
-          }}
+          onClick={() => fetchNextPage()}
+          disabled={isFetchingNextPage}
         >
-          previous
-        </button>
-
-        <button
-          disabled={!posts || posts.length < pageLimit}
-          className="btn btn-primary"
-          onClick={() => {
-            setPage(page + 1);
-          }}
-        >
-          next
+          {isFetchingNextPage ? "Loading more..." : "Load more"}
         </button>
       </div>
     </>
