@@ -2,8 +2,11 @@ import { useState } from "react";
 import usePosts from "../hooks/usePosts";
 
 const PostList = () => {
-  const [userId, setUserId] = useState<number>();
-  const { data: posts, error, isLoading } = usePosts(userId);
+  const pageLimit = 10;
+  const [page, setPage] = useState(1);
+
+  //Implementing catching using react-query
+  const { data: posts, error, isLoading } = usePosts({ page, pageLimit });
 
   if (error) return <p>{error.message}</p>;
   if (isLoading)
@@ -13,23 +16,8 @@ const PostList = () => {
       </div>
     );
 
-  const handleUserOnChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    setUserId(parseInt(e.target.value));
-  };
-
   return (
     <>
-      <select
-        className="form-select mb-3"
-        onChange={handleUserOnChange}
-        value={userId}
-      >
-        <option value=""></option>
-        <option value="1">User 1</option>
-        <option value="2">User 2</option>
-        <option value="3">User 3</option>
-      </select>
-
       <ul className="list-group">
         {posts?.map((post) => (
           <li key={post.id} className="list-group-item">
@@ -37,6 +25,28 @@ const PostList = () => {
           </li>
         ))}
       </ul>
+
+      <div className="d-flex justify-content-between mt-3">
+        <button
+          disabled={page === 1}
+          className="btn btn-primary"
+          onClick={() => {
+            setPage(page - 1);
+          }}
+        >
+          previous
+        </button>
+
+        <button
+          disabled={!posts || posts.length < pageLimit}
+          className="btn btn-primary"
+          onClick={() => {
+            setPage(page + 1);
+          }}
+        >
+          next
+        </button>
+      </div>
     </>
   );
 };
