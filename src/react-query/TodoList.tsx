@@ -14,12 +14,18 @@ const TodoList = () => {
       .then((res) => res.data);
 
   //Implementing catching using react-query
-  const { data: todos, error } = useQuery<Todo[], Error>({
+  const {
+    data: todos,
+    error,
+    isLoading,
+  } = useQuery<Todo[], Error>({
     queryKey: ["todos"], // This is the key for the query ie unique identifier
     queryFn: fetchTodos, // This is the function that will be called to fetch the data
   });
 
   if (error) return <p>{error.message}</p>;
+
+  if (isLoading) return <p>Loading...</p>;
 
   return (
     <ul className="list-group">
