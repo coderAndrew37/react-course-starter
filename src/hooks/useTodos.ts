@@ -8,16 +8,27 @@ interface Todo {
   completed: boolean;
 }
 
-const useTodos = () => {
+interface todoQuery {
+  page: number;
+  pageLimit: number;
+}
+
+const useTodos = (query: todoQuery) => {
   const fetchTodos = () =>
     axios
-      .get<Todo[]>("https://jsonplaceholder.typicode.com/todos")
+      .get<Todo[]>("https://jsonplaceholder.typicode.com/todos", {
+        params: {
+          _start: (query.page - 1) * query.pageLimit,
+          _limit: query.pageLimit,
+        },
+      })
       .then((res) => res.data);
 
   return useQuery<Todo[], Error>({
-    queryKey: ["todos"], // This is the key for the query ie unique identifier
+    queryKey: ["todos", query], // This is the key for the query ie unique identifier
     queryFn: fetchTodos, // This is the function that will be called to fetch the data
     staleTime: 10 * 1000, // This is the time in milliseconds after which the data will be considered stale
+    keepPreviousData: true, // This will keep the previous data while the new data is being fetched
   });
 };
 
