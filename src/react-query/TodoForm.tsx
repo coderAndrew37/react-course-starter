@@ -37,9 +37,6 @@ const TodoForm = () => {
       // Clear the input field after successful submission
       if (ref.current) ref.current.value = "";
     },
-    onError: (error) => {
-      console.error("Error adding todo:", error);
-    },
   });
 
   return (
@@ -65,7 +62,23 @@ const TodoForm = () => {
           <input ref={ref} type="text" className="form-control" />
         </div>
         <div className="col">
-          <button className="btn btn-primary">Add</button>
+          <button className="btn btn-primary" disabled={addTodo.isLoading}>
+            {/* If the mutation is loading, show a spinner */}
+            {/* Otherwise, show the text "Add" */}
+            {/* The button is disabled if the mutation is loading */}
+            {addTodo.isLoading ? (
+              <>
+                <span
+                  className="spinner-border spinner-border-sm"
+                  role="status"
+                  aria-hidden="true"
+                ></span>{" "}
+                Submitting...
+              </>
+            ) : (
+              "Add"
+            )}
+          </button>
         </div>
       </form>
     </>
