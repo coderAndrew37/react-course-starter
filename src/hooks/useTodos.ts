@@ -1,5 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
+import { CACHE_KEY_TODOS } from "../react-query/constants";
 
 export interface Todo {
   id: number;
@@ -25,7 +26,7 @@ const useTodos = (query: todoQuery) => {
       .then((res) => res.data);
 
   return useQuery<Todo[], Error>({
-    queryKey: ["todos", query], // This is the key for the query ie unique identifier
+    queryKey: [CACHE_KEY_TODOS, query], // This is the key for the query ie unique identifier
     queryFn: fetchTodos, // This is the function that will be called to fetch the data
     staleTime: 10 * 1000, // This is the time in milliseconds after which the data will be considered stale
     keepPreviousData: true, // This will keep the previous data while the new data is being fetched
