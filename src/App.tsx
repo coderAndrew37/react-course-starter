@@ -1,10 +1,19 @@
+import { useReducer } from "react";
 import "./App.css";
-import TaskList from "./state-management/TaskList";
+import LoginStatus from "./state-management/LoginStatus";
+import taskListReducer from "./state-management/reducers/taskListReducer";
+import NavBar from "./state-management/NavBar";
+import HomePage from "./state-management/HomePage";
+import TasksContext from "./state-management/context/tasksContext";
 
 function App() {
+  const [tasks, dispatch] = useReducer(taskListReducer, []);
   return (
     <>
-      <TaskList />
+      <TasksContext.Provider value={{ tasks, dispatch }}>
+        <NavBar />
+        <HomePage />
+      </TasksContext.Provider>
     </>
   );
 }
